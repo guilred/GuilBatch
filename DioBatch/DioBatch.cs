@@ -15,6 +15,7 @@ public class DioBatch {
     private readonly Effect _effect;
     private readonly EffectPass _pass;
     private readonly EffectParameter _projectionParam;
+    private readonly EffectParameter _clipSmoothingParam;
     private BlendState _currentBlendState = BlendState.AlphaBlend;
     private SamplerState _currentSamplerState = SamplerState.LinearClamp;
     private readonly SamplerState[] _prevSamplerStatesBuffer = new SamplerState[8];
@@ -53,17 +54,19 @@ public class DioBatch {
 
         _pass = _effect.Techniques[0].Passes[0];
         _projectionParam = _effect.Parameters["Projection"];
+        _clipSmoothingParam = _effect.Parameters["clipSmoothing"];
 
         _vertexBuffer = new DynamicVertexBuffer(device, PrimitiveVertex.VertexDeclaration, _maxVertices, BufferUsage.WriteOnly);
         _indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, _maxIndices, BufferUsage.WriteOnly);
     }
 
-    public void Begin(Matrix? view = null, Matrix? projection = null, BlendState? blendState = null, SamplerState? samplerState = null) {
+    public void Begin(Matrix? view = null, Matrix? projection = null, BlendState? blendState = null, SamplerState? samplerState = null, float? clipSmoothing = null) {
         if (_begun) throw new InvalidOperationException("DioBatch is already begun.");
 
         projection = (view ?? Matrix.Identity) * (projection ?? Matrix.CreateOrthographicOffCenter(0, _device.Viewport.Width, _device.Viewport.Height, 0, 0f, 1f));
 
         _projectionParam.SetValue(projection.Value);
+        _clipSmoothingParam.SetValue(clipSmoothing ?? 0.5f);
         _vertexCount = 0;
         _indexCount = 0;
         _currentBlendState = blendState ?? BlendState.AlphaBlend;

@@ -8,7 +8,7 @@
 #endif
 
 float4x4 Projection;
-
+float clipSmoothing;
 
 sampler2D Sampler0 : register(s0);
 sampler2D Sampler1 : register(s1);
@@ -115,7 +115,7 @@ float4 PS(VSOutput input) : SV_TARGET {
             p = Rotate(p, center, -rotation);
 
         float d = RoundedRectSDF(p, center, halfSize, radius);
-        alphaMask = 1.0 - smoothstep(-1, 1, d);
+        alphaMask = 1.0 - smoothstep(-clipSmoothing, 0.5f, d);
         clip(alphaMask - 0.001);
     }
 
