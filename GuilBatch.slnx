@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="GuilBatch/GuilBatch.csproj" />
+  <Project Path="GuilBatchTests/GuilBatchTests.csproj" />
+</Solution>

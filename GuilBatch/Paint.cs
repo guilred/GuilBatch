@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace DioUI;
+namespace GuilUI;
 
 public struct Paint {
     public enum PaintType : byte { Solid, Linear, Radial, Texture }

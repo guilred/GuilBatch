@@ -1,17 +1,18 @@
 ﻿#nullable disable
-using DioUI.RectangleFNS;
+using GuilUI;
+using GuilUI.RectangleFNS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace DioUI;
+namespace GuilBatchTests;
 
 public class Test : Game {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private DioBatch _dioBatch;
+    private GuilBatch _guilBatch;
     private Texture2D _mg;
     private Texture2D _gr;
     private Texture2D _dg;
@@ -33,7 +34,7 @@ public class Test : Game {
 
     protected override void LoadContent() {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _dioBatch = new DioBatch(GraphicsDevice);
+        _guilBatch = new GuilBatch(GraphicsDevice);
         _mg = Content.Load<Texture2D>("mg");
         _gr = Content.Load<Texture2D>("gr");
         _dg = Content.Load<Texture2D>("doggo");
@@ -55,7 +56,7 @@ public class Test : Game {
     protected override void Draw(GameTime gameTime) {
         if (!IsActive) return;
 
-        int SCENE = 2;
+        int SCENE = 0;
         float time = (float)gameTime.TotalGameTime.TotalSeconds;
         var wave = float.Pow(float.Sin(time * 0.25f * float.Pi), 2);
         var mpos = Mouse.GetState().Position.ToVector2();
@@ -64,9 +65,9 @@ public class Test : Game {
         if (SCENE == 0) {
             GraphicsDevice.Clear(new Color(0, 191, 255));
 
-            _dioBatch.Begin();
-            var bgps = Paint.Linear(Vector2.Zero, Vector2.UnitY * 900, new Color(0, 191, 255), Color.Blue).SetEasing(Paint.EasingType.EaseIn, 1.5f);
-            _dioBatch.FillRectangle(Vector2.Zero, new(1600, 900), bgps);
+            _guilBatch.Begin();
+            var bgps = Paint.LinearPixel(Vector2.Zero, Vector2.UnitY * 900, new Color(0, 191, 255), Color.Blue).SetEasing(Paint.EasingType.EaseIn, 1.5f);
+            _guilBatch.FillRectangle(Vector2.Zero, new(1600, 900), bgps);
 
             var clipRect = new RectangleF(mpos.X - 200, mpos.Y - 200 - 100 * wave, 400, 400 + 200 * wave);
             var clipRot = time * 0.5f;
@@ -81,11 +82,11 @@ public class Test : Game {
                 if (pos.X > 2000) pos.X = pos.X % 2000 - 300;
                 if (pos.Y > 1200) pos.Y = pos.Y % 1200 - 300;
                 var size = new Vector2(200 + 50 * nextF(), 50 + 50 * nextF()) * depth;
-                var ps = Paint.Linear(Vector2.Zero, Vector2.UnitY * size.Y, Color.White, Color.LightBlue).SetEasing(Paint.EasingType.EaseIn, 1.5f);
-                _dioBatch.FillRectangle(pos, size, ps, 10, dir);
+                var ps = Paint.LinearPixel(Vector2.Zero, Vector2.UnitY * size.Y, Color.White, Color.LightBlue).SetEasing(Paint.EasingType.EaseIn, 1.5f);
+                _guilBatch.FillRectangle(pos, size, ps, 10, dir);
                 depth += 0.8f / 100;
                 if (i == 49) {
-                    _dioBatch.PushClip(clipRect, 50, clipRot);
+                    _guilBatch.PushClip(clipRect, 50, clipRot);
                 }
             }
             depth = 0.2f;
@@ -94,59 +95,59 @@ public class Test : Game {
                 var pos = new Vector2(1600 * nextF(), 900 * nextF()) - Vector2.UnitY * time * 500 * depth;
                 if (pos.Y < 1200) pos.Y = 1200 + pos.Y % 1200 - 300;
                 var size = new Vector2(200, 200) * depth;
-                _dioBatch.DrawTexture(i % 2 == 0 ? _mg : _gr, pos, size, rounding: r);
+                _guilBatch.DrawTexture(i % 2 == 0 ? _mg : _gr, pos, size, rounding: r);
                 var Midbottom = pos + new Vector2(size.X / 2, size.Y);
-                _dioBatch.FillLine(Midbottom, Midbottom + Vector2.UnitY * 200 * depth, Color.Black, 5 * depth);
+                _guilBatch.FillLine(Midbottom, Midbottom + Vector2.UnitY * 200 * depth, Color.Black, 5 * depth);
                 depth += 0.8f / 20;
             }
 
-            _dioBatch.PopClip();
+            _guilBatch.PopClip();
             var sunCenter = new Vector2(800, 450);
             var sunR = 300 - 30 * wave;
-            var sunG = Paint.Radial(Vector2.One * sunR, Vector2.UnitX * sunR, Color.Yellow, Color.LightYellow).SetEasing(Paint.EasingType.EaseIn, 4);
-            _dioBatch.FillCircle(sunCenter, sunG, sunR, 64);
+            var sunG = Paint.RadialPixel(Vector2.One * sunR, Vector2.UnitX * sunR, Color.Yellow, Color.LightYellow).SetEasing(Paint.EasingType.EaseIn, 4);
+            _guilBatch.FillCircle(sunCenter, sunG, sunR);
             for (int i = 0; i < 20; i++) {
                 if (i % 2 == 0) {
-                    _dioBatch.PushClip(clipRect, 50, clipRot);
+                    _guilBatch.PushClip(clipRect, 50, clipRot);
                 }
                 else {
-                    _dioBatch.PopClip();
+                    _guilBatch.PopClip();
                 }
                 float t = i / 20f;
                 float angle = float.Tau * t + time * 0.5f;
                 var start = sunCenter + Vector2.Rotate(Vector2.UnitX * (360 - 30 * wave), angle);
                 var bladeLenght = 200 - 30 * float.Sin(float.Tau * t + time * 2);
                 var end = sunCenter + Vector2.Rotate(Vector2.UnitX * (320 + bladeLenght), angle);
-                var ps = Paint.Linear(Vector2.Zero, Vector2.UnitX * bladeLenght, Color.Yellow, Color.LightYellow).SetEasing(Paint.EasingType.EaseIn, 1.5f);
-                _dioBatch.FillLine(start, end, ps, 50);
+                var ps = Paint.LinearPixel(Vector2.Zero, Vector2.UnitX * bladeLenght, Color.Yellow, Color.LightYellow).SetEasing(Paint.EasingType.EaseIn, 1.5f);
+                _guilBatch.FillLine(start, end, ps, 50);
             }
 
             for (int j = 0; j < 6; j++) {
                 if (j % 2 == 0) {
-                    _dioBatch.PushClip(clipRect, 50, clipRot);
+                    _guilBatch.PushClip(clipRect, 50, clipRot);
                 }
                 else {
-                    _dioBatch.PopClip();
+                    _guilBatch.PopClip();
                 }
                 for (int i = 0; i < 10; i++) {
                     var iwave = float.Pow(float.Sin(time * 0.5f * float.Pi + i * 0.2f + (j * 0.2f - 0.3f)), 2);
                     var pos = new Vector2(160 * i + 80, 780 + (j * 35) - (80 - j * 10) * iwave);
-                    var ps = Paint.Linear(Vector2.Zero, Vector2.UnitX * (85 + (j * 10)) * 2, bc(Color.Green, 0.5f - j * 0.1f), bc(Color.Green, 1 - j * 0.1f));
-                    _dioBatch.FillCircle(pos, ps, 85 + (j * 10));
+                    var ps = Paint.LinearPixel(Vector2.Zero, Vector2.UnitX * (85 + (j * 10)) * 2, bc(Color.Green, 0.5f - j * 0.1f), bc(Color.Green, 1 - j * 0.1f));
+                    _guilBatch.FillCircle(pos, ps, 85 + (j * 10));
                 }
             }
 
             if (wave > 0.5f)
-                _dioBatch.BorderRectangle(clipRect.Position, clipRect.Size, Color.Black, 2, 50, clipRot, clipRect.Size / 2);
+                _guilBatch.BorderRectangle(clipRect.Position, clipRect.Size, Color.Black, 2, 50, clipRot, clipRect.Size / 2);
 
-            _dioBatch.End(); // ONE SINGLE DRAW CALL
+            _guilBatch.End(); // ONE SINGLE DRAW CALL
         }
         else if (SCENE == 1) {
             performTests((int)((time * 0.25f) / 0.25f) % (5 + 1));
         }
         else if (SCENE == 2) {
             GraphicsDevice.Clear(Color.White);
-            _dioBatch.Begin();
+            _guilBatch.Begin();
 
             float squiWave = Math.Clamp((wave - 0.1f) / (0.75f - 0.1f), 0f, 1f);
             var pos = new Vector2(200, 200);
@@ -155,13 +156,13 @@ public class Test : Game {
             var ps = Paint.Linear(Vector2.Zero, Vector2.UnitX, Color.Blue, Color.Magenta) * 1;
             var ps2 = Paint.Linear(Vector2.UnitY * 0.5f, Vector2.UnitY * 0.5f + Vector2.UnitX, Color.Green, Color.Red).SetOffsets(0.5f, 0.5f) * 1;
 
-            //_dioBatch.DrawRectangle(pos, size, ps, ps2, 10, 40);
-            //_dioBatch.DrawCircle(pos + size / 2, ps, ps2, size.X / 2, 0);
-            //_dioBatch.DrawArc(pos + size / 2, ps, ps2, size.X / 2 - 80, 80, 0, float.Pi * 1.96f, 0);
-            //_dioBatch.DrawLine(pos, pos + size, ps, ps2, 50, 10);
-            _dioBatch.DrawTexture(_dg, pos, size, null, ps * 0.1f, rounding: 40);
+            //_guilBatch.DrawRectangle(pos, size, ps, ps2, 10, 40);
+            //_guilBatch.DrawCircle(pos + size / 2, ps, ps2, size.X / 2, 0);
+            //_guilBatch.DrawArc(pos + size / 2, ps, ps2, size.X / 2 - 80, 80, 0, float.Pi * 1.96f, 0);
+            //_guilBatch.DrawLine(pos, pos + size, ps, ps2, 50, 10);
+            _guilBatch.DrawTexture(_dg, pos, size, null, ps * 0.1f, rounding: 40);
 
-            _dioBatch.End();
+            _guilBatch.End();
         }
 
         GraphicsDevice.SetRenderTarget(null);
@@ -191,31 +192,31 @@ public class Test : Game {
             (pos, size) = (new(cx, cy), new(200, 150));
         }
 
-        _dioBatch.Begin();
+        _guilBatch.Begin();
 
         var ps = Paint.Linear(Vector2.Zero, size, Color.Blue, Color.Magenta) * m1;
         var ps2 = Paint.Linear(Vector2.Zero, size, Color.Magenta, Color.Blue) * m2;
-        _dioBatch.DrawRectangle(pos, size, ps, ps2, 20, 40, 0.05f, size / 2);
+        _guilBatch.DrawRectangle(pos, size, ps, ps2, 20, 40, 0.05f, size / 2);
         step();
 
         ps = Paint.Linear(Vector2.Zero, Vector2.One * size.X, Color.Blue, Color.Magenta) * m1;
         ps2 = Paint.Linear(Vector2.Zero, Vector2.One * size.X, Color.Magenta, Color.Blue) * m2;
-        _dioBatch.DrawCircle(pos + size / 2, ps, ps2, size.X / 2, 20);
+        _guilBatch.DrawCircle(pos + size / 2, ps, ps2, size.X / 2, 20);
         step();
 
         ps = Paint.Linear(Vector2.Zero, Vector2.One * size.X, Color.Blue, Color.Magenta) * m1;
         ps2 = Paint.Linear(Vector2.Zero, Vector2.One * size.X, Color.Magenta, Color.Blue) * m2;
-        _dioBatch.DrawArc(pos + size / 2, ps, ps2, size.X / 2 - 80, 80, 0, float.Pi * 1.5f, 20);
+        _guilBatch.DrawArc(pos + size / 2, ps, ps2, size.X / 2 - 80, 80, 0, float.Pi * 1.5f, 20);
         step();
         
         ps = Paint.Linear(Vector2.Zero, size, Color.Blue, Color.Magenta) * m1;
         ps2 = Paint.Linear(Vector2.Zero, size, Color.Magenta, Color.Blue) * m2;
-        _dioBatch.DrawLine(pos, pos + size, ps, ps2, 50, 5);
+        _guilBatch.DrawLine(pos, pos + size, ps, ps2, 50, 5);
         step();
 
-        _dioBatch.DrawTexture(_gr, pos, size, rounding: 20);
+        _guilBatch.DrawTexture(_gr, pos, size, rounding: 20);
 
-        _dioBatch.End();
+        _guilBatch.End();
     }
 }
 

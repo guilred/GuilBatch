@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="guilbatch-effect.fx" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="guilbatch-effect.mgfx">
+			<LogicalName>GuilBatch.guilbatch-effect.mgfx</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<Target Name="CompileShaders" BeforeTargets="BeforeBuild" Inputs="guilbatch-effect.fx" Outputs="guilbatch-effect.mgfx">
+		<Message Importance="High" Text="&gt; Compiling GuilBatch Shader..." />
+		<Exec Command="dotnet tool run mgfxc guilbatch-effect.fx guilbatch-effect.mgfx /Profile:OpenGL" />
+	</Target>
+
+</Project>

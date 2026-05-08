@@ -1,12 +1,12 @@
-﻿using DioUI.RectangleFNS;
+﻿using GuilUI.RectangleFNS;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Runtime.InteropServices;
 
-namespace DioUI;
+namespace GuilUI;
 
-public class DioBatch {
+public class GuilBatch {
     private const int _maxVertices = 8192;
     private const int _maxIndices = _maxVertices * 3;
 
@@ -36,16 +36,16 @@ public class DioBatch {
     // debugging
     private double d_time;
     private bool d_blink => double.Sin(d_time * 0.5f) > 0;
-    public DioBatch(GraphicsDevice device, ContentManager? content = null, Effect? effect = null) {
+    public GuilBatch(GraphicsDevice device, ContentManager? content = null, Effect? effect = null) {
         _device = device;
 
         if (content is not null)
-            _effect = content.Load<Effect>("diobatch-effect");
+            _effect = content.Load<Effect>("guilbatch-effect");
         else if (effect is not null)
             _effect = effect;
         else {
-            var assembly = typeof(DioBatch).Assembly;
-            string resourceName = "DioBatch.diobatch-effect.mgfx";
+            var assembly = typeof(GuilBatch).Assembly;
+            string resourceName = "GuilBatch.guilbatch-effect.mgfx";
             using Stream? stream = assembly.GetManifestResourceStream(resourceName) ?? throw new Exception("Could not find the embedded shader resource :(");
             byte[] bytecode = new byte[stream.Length];
             stream.ReadExactly(bytecode, 0, (int)stream.Length);
