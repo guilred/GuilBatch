@@ -410,7 +410,7 @@ public class GuilBatch {
             addRectFringe(innerCenters, inR, cornerSegments, borderPaint, false, hasRotation, rotSin, rotCos, aaPivot);
         }
         if (hasFill) {
-            float borderA = hasBorder? byte.Max(borderPaint.ColorA.A, borderPaint.ColorB.A) / 255f : 0;
+            float borderA = hasBorder ? byte.Max(borderPaint.ColorA.A, borderPaint.ColorB.A) / 255f : 0;
             addRectFringe(innerCenters, inR, cornerSegments, fillPaint * (1 - borderA), true, hasRotation, rotSin, rotCos, aaPivot);
         }
     }
@@ -534,7 +534,7 @@ public class GuilBatch {
         Vector2 startCapCenter = center + new Vector2(MathF.Cos(startAngle), MathF.Sin(startAngle)) * midRadius;
         Vector2 endCapCenter = center + new Vector2(MathF.Cos(endAngle), MathF.Sin(endAngle)) * midRadius;
 
-        int capSegments = Math.Max(3, segments / 4);
+        int capSegments = computeSegments(outerRadius / 2, float.Pi, quality);
 
         if (hasBorder) {
             addRingSegment(center, midRadius + fillHalfThick, midRadius + halfThick, startAngle, endAngle, borderPaint, segments);
@@ -580,7 +580,7 @@ public class GuilBatch {
                 }
             }
             if (hasFill) {
-                float borderA = hasBorder? byte.Max(borderPaint.ColorA.A, borderPaint.ColorB.A) / 255f : 0;
+                float borderA = hasBorder ? byte.Max(borderPaint.ColorA.A, borderPaint.ColorB.A) / 255f : 0;
                 var scaledFill = fillPaint * (1 - borderA);
                 addCircleFringe(center, midRadius + fillHalfThick, startAngle, endAngle, scaledFill, segments, true);
                 addCircleFringe(center, midRadius - fillHalfThick, startAngle, endAngle, scaledFill, segments, false);
@@ -853,7 +853,6 @@ public class GuilBatch {
             }
         }
 
-        // --- Add Texture Fringe AA ---
         if (enableAA) {
             Vector2 aaPivot = position + origin;
             addTextureFringe(outCenters, outR, cornerSegments, actualTint, hasRotation, rotSin, rotCos, aaPivot, texIndex, position, actualSize, uvMin, uvMax, flipH, flipV);
@@ -894,6 +893,7 @@ public class GuilBatch {
 
         DrawTexture(texture, new Vector2(destinationRectangle.X, destinationRectangle.Y), destSize, sourceRectangle, paint, rotation, origin * scale, effects, rounding, cornerQuality, enableAA);
     }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct PrimitiveVertex : IVertexType {
         public Vector3 Position;
@@ -916,7 +916,7 @@ public class GuilBatch {
             new VertexElement(76, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 4)
         );
 
-        public PrimitiveVertex(Vector3 pos, Paint paint, Vector4 clipRect, Vector2 clipParams) {
+        public PrimitiveVertex(in Vector3 pos, in Paint paint, in Vector4 clipRect, in Vector2 clipParams) {
             Position = pos;
             ClipRect = clipRect;
             ClipParams = clipParams;
@@ -929,7 +929,7 @@ public class GuilBatch {
             PaintParams = new Vector3(paint.OffsetA, paint.OffsetB, packedData);
         }
 
-        public PrimitiveVertex(Vector3 pos, Vector2 texCoords, int index, Paint paint, Vector4 clipRect, Vector2 clipParams) {
+        public PrimitiveVertex(in Vector3 pos, in Vector2 texCoords, int index, in Paint paint, in Vector4 clipRect, in Vector2 clipParams) {
             Position = pos;
             ClipRect = clipRect;
             ClipParams = clipParams;
