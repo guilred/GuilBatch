@@ -1,10 +1,10 @@
-﻿using GuilUI.RectangleFNS;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Runtime.InteropServices;
+using Guilred.Shapes;
 
-namespace GuilUI;
+namespace Guilred.Rendering;
 
 public class GuilBatch {
     private const int _maxVertices = 8192;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace GuilUI;
+namespace Guilred.Rendering;
 
 public struct Paint {
     public enum PaintType : byte { Solid, Linear, Radial, Texture }

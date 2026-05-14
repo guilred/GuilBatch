@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="../GuilUI/RectangleF/RectangleF.csproj" />
   <Project Path="GuilBatch/GuilBatch.csproj" />
   <Project Path="GuilBatchTests/GuilBatchTests.csproj" />
 </Solution>
