@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\GuilUI\RectangleF\RectangleF.csproj" />
+	  <ProjectReference Include="..\..\RectangleF\RectangleF.csproj" />
 	</ItemGroup>
 
 	<Target Name="CompileShaders" BeforeTargets="BeforeBuild" Inputs="guilbatch-effect.fx" Outputs="guilbatch-effect.mgfx">

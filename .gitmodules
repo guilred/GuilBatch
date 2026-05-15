@@ -1,0 +1,3 @@
+[submodule "RectangleF"]
+	path = RectangleF
+	url = https://github.com/guilred/RectangleF.git
